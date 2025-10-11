@@ -12,9 +12,9 @@ rocket = pygame.image.load("images/spaceship.png")
 
 y = 250
 x = 250
-up = False
-left = False
-right = False
+
+
+moves = {"up":False , "left":False, "right":False}
 
 while running:
     clock.tick(60)
@@ -24,36 +24,31 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
-        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                up = True
+                moves["up"] = True
+            if event.key == pygame.K_LEFT:
+                moves["left"] = True
+            if event.key == pygame.K_RIGHT:
+                moves["right"] = True
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                up = False
+                moves["up"] = False
 
-        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                left = True
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                left = False
+                moves["left"] = False
 
-        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                right = True
+                moves["right"] = False
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                right = False
-
-    if up:
+    if moves["up"]:
         y-=4
     
-    if left:
+    if moves["left"]:
         x-=4
         
-    if right:
+    if moves["right"]:
         x+=4
 
     y+=2
