@@ -7,12 +7,19 @@ class Spaceship:
         self.image = pygame.transform.scale(self.image,(60,60))
         self.image = pygame.transform.rotate(self.image,angle)
         self.move = {"up":False,"down":False}
+        self.bullets = []
     
     def handle_movement(self):
         if self.move["up"]:
             self.y-=4
         elif self.move["down"]:
             self.y+=4
+
+class Bullet:
+    def __init__(self,color,x,y):
+        self.x = x
+        self.y = y
+        self.color = color
 
 pygame.init()
 
@@ -41,6 +48,11 @@ while running:
             if event.key == pygame.K_DOWN:
                 red_spaceship.move["down"] = True
 
+            if event.key == pygame.K_SPACE:
+                red_spaceship_bullet = Bullet("red",20,20)
+                red_spaceship.bullets.append(red_spaceship_bullet)
+            
+
             if event.key == pygame.K_w:
                 yellow_spaceship.move["up"] = True
             if event.key == pygame.K_s:
@@ -62,3 +74,6 @@ while running:
     red_spaceship.handle_movement()
     yellow_spaceship.handle_movement()
     pygame.display.update()
+
+
+print(red_spaceship.bullets)
