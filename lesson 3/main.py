@@ -10,9 +10,10 @@ class Spaceship:
         self.bullets = []
         self.rect = self.image.get_rect(center = (self.x,self.y))
     
-    # def detect_colision(self,enemyship):
-        # for bullet in self.bullets:
-            # if self.rect.colliderect(bullet):
+    def detect_colision(self,enemyship):
+        for bullet in self.bullets:
+            if bullet.rect.colliderect(enemyship.rect):
+                self.bullets.remove(bullet)
 
     
     def handle_movement(self):
@@ -22,26 +23,28 @@ class Spaceship:
             self.rect.y+=4
 
         for bullet in self.bullets:
-            bullet.fire()
-            bullet.draw()
+            if bullet.rect.x<=0 or bullet.rect.x>=1000:
+                self.bullets.remove(bullet)
+            else:
+                bullet.fire()
+                bullet.draw()
             
 
 
 class Bullet:
     def __init__(self,color,center):
         self.x,self.y = center
-        
         self.color = color
+        self.rect = pygame.Rect(self.x,self.y, 10,10)
 
     def fire(self):
         if self.color == "red":
-            self.x+=5
+            self.rect.x+=5
         else:
-            self.x-=5
+            self.rect.x-=5
 
     def draw(self):
-        rect = pygame.Rect(self.x,self.y, 10,10)
-        pygame.draw.rect(screen,self.color,rect)
+        pygame.draw.rect(screen,self.color,self.rect)
 
 
 
@@ -101,7 +104,8 @@ while running:
 
     red_spaceship.handle_movement()
     yellow_spaceship.handle_movement()
+    red_spaceship.detect_colision(yellow_spaceship)
+    yellow_spaceship.detect_colision(red_spaceship)
     pygame.display.update()
 
 
-print(red_spaceship.bullets)
