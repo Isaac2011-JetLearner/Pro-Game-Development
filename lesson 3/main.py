@@ -9,11 +9,19 @@ class Spaceship:
         self.move = {"up":False,"down":False}
         self.bullets = []
         self.rect = self.image.get_rect(center = (self.x,self.y))
+        self.health = 10
+        self.health_text = font.render(f"health:{self.health}",1,"white",)
+
     
     def detect_colision(self,enemyship):
         for bullet in self.bullets:
             if bullet.rect.colliderect(enemyship.rect):
                 self.bullets.remove(bullet)
+                enemyship.health-=1
+                enemyship.health_text = font.render(f"health:{enemyship.health}",1,"white",)
+                if enemyship.health ==0: 
+                    return True
+
 
     
     def handle_movement(self):
@@ -49,6 +57,8 @@ class Bullet:
 
 
 pygame.init()
+pygame.font.init()
+font = pygame.font.SysFont("comic sans", 30)
 
 screen = pygame.display.set_mode((1000,600))
 clock = pygame.time.Clock()
@@ -58,54 +68,70 @@ bg = pygame.transform.scale(bg,(1000,600))
 red_spaceship = Spaceship("lesson 3/images/spaceship_red.png",(90),100,100)
 yellow_spaceship = Spaceship("lesson 3/images/spaceship_yellow.png",(-90),800,100)
 
+gameover = False
+gameover_text = font.render("GAMEOVER",1,"WHITE")
 running = True
 move = {"up": False, "down": False}
 while running:
     clock.tick(60)
     screen.blit(bg,(0,0))
-    screen.blit(red_spaceship.image,(red_spaceship.rect.topleft))
-    screen.blit(yellow_spaceship.image,(yellow_spaceship.rect.topleft))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            break
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
-                red_spaceship.move["up"] = True
-            if event.key == pygame.K_s:
-                red_spaceship.move["down"] = True
+    if gameover:
+        screen.blit(gameover_text,(500,300))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                break
+    else:
+        screen.blit(red_spaceship.image,(red_spaceship.rect.topleft))
+        screen.blit(yellow_spaceship.image,(yellow_spaceship.rect.topleft))
+        screen.blit(red_spaceship.health_text,(30,30))
+        screen.blit(yellow_spaceship.health_text,(870,30))
+        pygame.draw.line(screen,"white",(500,0),(500,600),5)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    red_spaceship.move["up"] = True
+                if event.key == pygame.K_s:
+                    red_spaceship.move["down"] = True
 
-            if event.key == pygame.K_a:
-                red_spaceship_bullet = Bullet("red",red_spaceship.rect.center)
-                red_spaceship.bullets.append(red_spaceship_bullet)
+                if event.key == pygame.K_a:
+                    red_spaceship_bullet = Bullet("red",red_spaceship.rect.center)
+                    red_spaceship.bullets.append(red_spaceship_bullet)
 
-            if event.key == pygame.K_l:
-                yellow_spaceship_bullet = Bullet("yellow",yellow_spaceship.rect.center)
-                yellow_spaceship.bullets.append(yellow_spaceship_bullet)
-            
+                if event.key == pygame.K_l:
+                    yellow_spaceship_bullet = Bullet("yellow",yellow_spaceship.rect.center)
+                    yellow_spaceship.bullets.append(yellow_spaceship_bullet)
+                
 
-            if event.key == pygame.K_UP:
-                yellow_spaceship.move["up"] = True
-            if event.key == pygame.K_DOWN:
-                yellow_spaceship.move["down"] = True
+                if event.key == pygame.K_UP:
+                    yellow_spaceship.move["up"] = True
+                if event.key == pygame.K_DOWN:
+                    yellow_spaceship.move["down"] = True
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_w:
-               red_spaceship.move["up"] = False
-            if event.key == pygame.K_UP:
-                yellow_spaceship.move["up"] = False
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w:
+                    red_spaceship.move["up"] = False
+                if event.key == pygame.K_UP:
+                    yellow_spaceship.move["up"] = False
 
-            if event.key == pygame.K_s:
-               red_spaceship.move["down"] = False
+                if event.key == pygame.K_s:
+                    red_spaceship.move["down"] = False
 
-            if event.key == pygame.K_DOWN:
-               yellow_spaceship.move["down"] = False
+                if event.key == pygame.K_DOWN:
+                    yellow_spaceship.move["down"] = False
 
 
-    red_spaceship.handle_movement()
-    yellow_spaceship.handle_movement()
-    red_spaceship.detect_colision(yellow_spaceship)
-    yellow_spaceship.detect_colision(red_spaceship)
+        red_spaceship.handle_movement()
+        yellow_spaceship.handle_movement()
+        if red_spaceship.detect_colision(yellow_spaceship):
+            gameover = True
+        if yellow_spaceship.detect_colision(red_spaceship):
+            gameover = True
+
     pygame.display.update()
 
 
