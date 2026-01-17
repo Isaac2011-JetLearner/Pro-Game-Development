@@ -66,6 +66,7 @@ def draw_text(text,font,text_col,x,y):
 
 class Pipe(pygame.sprite.Sprite):
     def __init__(self,x,y,pos):
+        pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("lesson 3/images/pipe.png")
         self.rect = self.image.get_rect()
         if pos == 1:
@@ -102,12 +103,19 @@ screen = pygame.display.set_mode((900,900))
 bg = pygame.image.load("lesson 3/images/flappybg.png")
 ground = pygame.image.load("lesson 3/images/ground.png")
 
-def reset_game():
-    pipe_group.empty()
+def reset_game(): 
+    global score,flying,pass_pipe,last_pipe
+    for i in pipe_group.sprites():
+        i.kill()
     bird.rect.x = 100
     bird.rect.y = int(900//2)
     score = 0
     return score
+    # bird.vel = 0
+    # flying = False
+    # bird.click = False
+    # pass_pipe = False
+    # last_pipe = pygame.time.get_ticks()-pipe_frequency
 
 while running:
     clock.tick(fps)
@@ -151,6 +159,7 @@ while running:
         if button.draw():
             game_over = False
             score = reset_game()
+            
 
 
     for event in pygame.event.get():
