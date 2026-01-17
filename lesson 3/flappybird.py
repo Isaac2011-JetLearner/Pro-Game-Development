@@ -1,8 +1,12 @@
 import pygame
 from pygame.locals import *
 import random
+pygame.font.init()
+font = pygame.font.SysFont("Alassy Caps",20)
+white = (255,255,255)
 pygame.init()
 clock = pygame.time.Clock()
+score = 0
 fps = 60
 flying = False
 game_over = False
@@ -56,6 +60,10 @@ class Bird(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.images[self.index],-90)
 
 
+def draw_text(text,font,text_col,x,y):
+    img = font.render(text,True,text_col)
+    screen.blit(img,(x,y))
+
 class Pipe(pygame.sprite.Sprite):
     def __init__(self,x,y,pos):
         self.image = pygame.image.load("lesson 3/images/pipe.png")
@@ -94,6 +102,12 @@ screen = pygame.display.set_mode((900,900))
 bg = pygame.image.load("lesson 3/images/flappybg.png")
 ground = pygame.image.load("lesson 3/images/ground.png")
 
+def reset_game():
+    pipe_group.empty()
+    bird.rect.x = 100
+    bird.rect.y = int(900//2)
+    score = 0
+    return score
 
 while running:
     clock.tick(fps)
@@ -102,6 +116,23 @@ while running:
     pipe_group.draw(screen)
     bird_group.draw(screen)
     bird_group.update()
+    if len(pipe_group)>0:
+        if bird_group.sprites()[0].rect.left>pipe_group.sprites()[0].rect.left and bird_group.sprites()[0].rect.right<pipe_group.sprites()[0].rect.right and pass_pipe == False:
+            pass_pipe = True
+
+        if pass_pipe == True:
+           if bird_group.sprites()[0].rect.left>pipe_group.sprites()[0].rect.right:
+               score+=1
+               pass_pipe =False
+
+    draw_text(str(score),font,white,int(900//2),20)
+
+    if pygame.sprite.groupcollide(bird_group,pipe_group,False,False) or bird.rect.top<0:
+        game_over = True
+    if bird.rect.bottom>=768:
+        game_over = True
+        flying = False
+
     if flying == True and game_over == False:
         time_now = pygame.time.get_ticks()
         if time_now-last_pipe>pipe_frequency:
@@ -116,13 +147,15 @@ while running:
         if abs(ground_scroll)>30:
             ground_scroll = 0
 
-    
+    if game_over == True:
+        if button.draw():
+            game_over = False
+            score = reset_game()
 
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            screen.blit(restart,(450,350))
         if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
             flying = True
 
