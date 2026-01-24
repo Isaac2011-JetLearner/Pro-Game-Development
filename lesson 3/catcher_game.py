@@ -20,10 +20,12 @@ class Holder():
     
     def detect_colision(self):
             if catcher.rect.colliderect(cash.rect):
+                print("YES")
                 score+=1
             
             if catcher.rect.colliderect(leaf.rect) or catcher.rect.colliderect(rocks.rect):
                 score-=1
+
                 
 
 
@@ -129,6 +131,6 @@ while running:
     pygame.display.update()
 
         
-        
+print(score)
 
 pygame.quit()
