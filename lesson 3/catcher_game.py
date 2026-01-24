@@ -1,24 +1,23 @@
 import pygame
 import random
-
 pygame.font.init()
+score = 0
 font = pygame.font.SysFont("Alasassy Caps",20)
 white = (255,255,255)
 screen = pygame.display.set_mode((1000,800))
 bg = pygame.image.load("lesson 3/images/grassbackground.png")
 bg = pygame.transform.scale(bg,(1000,800))
 class Holder():
-    def __init__(self,image,x,y):
+    def __init__(self,image):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image,(200,150))
-        self.x = x
-        self.y = y
         self.rect = self.image.get_rect(center = (self.x,self.y))
         
     def draw(self):
-         screen.blit(self.image,(self.x,self.y))
+         screen.blit(self.image,self.rect)
     
     def detect_colision(self):
+            global score
             if catcher.rect.colliderect(cash.rect):
                 print("YES")
                 score+=1
@@ -32,15 +31,13 @@ class Holder():
 
 items = ["lesson 3/images/cash.png","lesson 3/images/leaf.png","lesson 3/images/rocks.png"]
 class Things():
-    def __init__(self,image,x,y):
+    def __init__(self,image):
         self.image = pygame.image.load(image)
-        self.x = x
-        self.y = y
         self.image = pygame.transform.scale(self.image,(100,100))
         self.rect = self.image.get_rect(center = (self.x,self.y))
 
     def draw(self):
-        screen.blit(self.image,(self.x,self.y))
+        screen.blit(self.image,self.rect)
 
 
 
@@ -54,10 +51,9 @@ charcaters = []
 catcher = Holder("lesson 3/images/pen_catcher.png",400,600)
 left = False
 right = False
-
 running = True
 while running:
-    score = 0
+   
     screen.blit(bg,(0,0))
     catcher.draw()
     leaf.draw()
@@ -91,11 +87,6 @@ while running:
     elif catcher.x>=800:
         catcher.x=800
 
-    # if catcher or catcher.rect == rocks.rect:
-    #     score-=1
-
-    # elif catcher.rect == cash:
-    #     score+=1
     
 
     for event in pygame.event.get():
