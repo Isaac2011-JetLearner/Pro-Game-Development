@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import random
 pygame.font.init()
-font = pygame.font.SysFont("Alassy Caps",20)
+font = pygame.font.SysFont("Alasassy Caps",20)
 white = (255,255,255)
 pygame.init()
 clock = pygame.time.Clock()
